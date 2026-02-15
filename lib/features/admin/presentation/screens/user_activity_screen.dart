@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'admin_dashboard.dart';
+import 'manage_users_screen.dart';
 
-class ManageUsersScreen extends StatelessWidget {
-  const ManageUsersScreen({super.key});
+class UserActivityScreen extends StatelessWidget {
+  const UserActivityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,17 +11,17 @@ class ManageUsersScreen extends StatelessWidget {
       backgroundColor: Colors.grey[100],
 
       appBar: AppBar(
+        backgroundColor: Colors.grey[100],
+        elevation: 0,
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () {
             Navigator.pop(context); // ترجع للداشبورد
           },
         ),
-        backgroundColor: Colors.grey[100],
-        elevation: 0,
-        centerTitle: true,
         title: const Text(
-          "إدارة المستخدمين",
+          "مراجعة أنشطة المستخدم",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -35,16 +36,13 @@ class ManageUsersScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              buildButton(context, "قائمة المستخدمين", const UsersListPage()),
+              buildButton(context, "القضايا", const CasesActivityPage()),
               const SizedBox(height: 20),
 
-              buildButton(context, "إضافة مستخدم", const AddUserPage()),
+              buildButton(context, "عمليات تسجيل الدخول", const LoginActivityPage()),
               const SizedBox(height: 20),
 
-              buildButton(context, "تعديل ملف المستخدم", const EditUserPage()),
-              const SizedBox(height: 20),
-
-              buildButton(context, "حذف حساب مستخدم", const DeleteUserPage()),
+              buildButton(context, "التعديلات", const EditsActivityPage()),
 
             ],
           ),
@@ -84,87 +82,66 @@ class ManageUsersScreen extends StatelessWidget {
   }
 }
 
-// ================= الصفحات المؤقتة =================
+// ================= الصفحات الفرعية المؤقتة =================
 
-// صفحة قائمة المستخدمين
-class UsersListPage extends StatelessWidget {
-  const UsersListPage({super.key});
+// صفحة القضايا
+class CasesActivityPage extends StatelessWidget {
+  const CasesActivityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("قائمة المستخدمين"),
+        title: const Text("القضايا"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة قائمة المستخدمين - مؤقتة"),
+        child: Text("صفحة القضايا - مؤقتة"),
       ),
     );
   }
 }
 
-// صفحة إضافة مستخدم
-class AddUserPage extends StatelessWidget {
-  const AddUserPage({super.key});
+// صفحة عمليات تسجيل الدخول
+class LoginActivityPage extends StatelessWidget {
+  const LoginActivityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("إضافة مستخدم"),
+        title: const Text("عمليات تسجيل الدخول"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة إضافة مستخدم - مؤقتة"),
+        child: Text("صفحة عمليات تسجيل الدخول - مؤقتة"),
       ),
     );
   }
 }
 
-// صفحة تعديل المستخدم
-class EditUserPage extends StatelessWidget {
-  const EditUserPage({super.key});
+// صفحة التعديلات
+class EditsActivityPage extends StatelessWidget {
+  const EditsActivityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("تعديل ملف المستخدم"),
+        title: const Text("التعديلات"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة تعديل المستخدم - مؤقتة"),
-      ),
-    );
-  }
-}
-
-// صفحة حذف المستخدم
-class DeleteUserPage extends StatelessWidget {
-  const DeleteUserPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("حذف حساب مستخدم"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: const Center(
-        child: Text("صفحة حذف المستخدم - مؤقتة"),
+        child: Text("صفحة التعديلات - مؤقتة"),
       ),
     );
   }
