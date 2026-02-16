@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'admin_dashboard.dart';
-import 'admin_profile_screen.dart';
 
 class ManageCasesScreen extends StatelessWidget {
   const ManageCasesScreen({super.key});

@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/features/admin/presentation/screens/admin_dashboard.dart';
-import 'package:front_end/features/admin/presentation/screens/admin_profile_screen.dart';
-import 'package:front_end/features/admin/presentation/screens/manage_cases_screen.dart';
 import 'package:front_end/features/admin/presentation/screens/manage_users_screen.dart';
-import 'package:front_end/features/admin/presentation/screens/user_activity_screen.dart';
 import 'package:front_end/features/auth/presentation/screens/login_screen.dart';
 import 'package:front_end/features/auth/presentation/screens/signup_screen.dart';
-import 'package:front_end/features/auth/presentation/screens/verification_screen.dart';
-import 'package:front_end/features/onboarding/presentation/screens/splash_screen.dart';
-import 'package:front_end/features/profile/presentation/screens/edit_profile_screen.dart';
-import 'package:front_end/features/profile/presentation/screens/profile_screen.dart';
 import 'package:front_end/features/report/presentation/screens/home_screen.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:front_end/features/profile/presentation/screens/case_history_screen.dart';
 void main() {
   runApp(const MalathApp());
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/widgets/custom_button.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

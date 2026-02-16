@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'admin_dashboard.dart';
 
 class ManageUsersScreen extends StatelessWidget {
   const ManageUsersScreen({super.key});
