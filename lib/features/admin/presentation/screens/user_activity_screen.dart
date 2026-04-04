@@ -7,7 +7,6 @@ class UserActivityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-
       appBar: AppBar(
         backgroundColor: Colors.grey[100],
         elevation: 0,
@@ -15,33 +14,32 @@ class UserActivityScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () {
-            Navigator.pop(context); // ترجع للداشبورد
+            Navigator.pop(context);
           },
         ),
         title: const Text(
-          "مراجعة أنشطة المستخدم",
+          'مراجعة أنشطة المستخدم',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-              buildButton(context, "القضايا", const CasesActivityPage()),
+              buildButton(context, 'القضايا', const CasesActivityPage()),
               const SizedBox(height: 20),
-
-              buildButton(context, "عمليات تسجيل الدخول", const LoginActivityPage()),
+              buildButton(
+                context,
+                'عمليات تسجيل الدخول',
+                const LoginActivityPage(),
+              ),
               const SizedBox(height: 20),
-
-              buildButton(context, "التعديلات", const EditsActivityPage()),
-
+              buildButton(context, 'التعديلات', const EditsActivityPage()),
             ],
           ),
         ),
@@ -49,7 +47,6 @@ class UserActivityScreen extends StatelessWidget {
     );
   }
 
-  // دالة الزر الموحد
   Widget buildButton(BuildContext context, String text, Widget page) {
     return SizedBox(
       width: double.infinity,
@@ -80,9 +77,6 @@ class UserActivityScreen extends StatelessWidget {
   }
 }
 
-// ================= الصفحات الفرعية المؤقتة =================
-
-// صفحة القضايا
 class CasesActivityPage extends StatelessWidget {
   const CasesActivityPage({super.key});
 
@@ -90,20 +84,19 @@ class CasesActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("القضايا"),
+        title: const Text('القضايا'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة القضايا - مؤقتة"),
+        child: Text('صفحة القضايا - مؤقتة'),
       ),
     );
   }
 }
 
-// صفحة عمليات تسجيل الدخول
 class LoginActivityPage extends StatelessWidget {
   const LoginActivityPage({super.key});
 
@@ -111,20 +104,19 @@ class LoginActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("عمليات تسجيل الدخول"),
+        title: const Text('عمليات تسجيل الدخول'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة عمليات تسجيل الدخول - مؤقتة"),
+        child: Text('صفحة عمليات تسجيل الدخول - مؤقتة'),
       ),
     );
   }
 }
 
-// صفحة التعديلات
 class EditsActivityPage extends StatelessWidget {
   const EditsActivityPage({super.key});
 
@@ -132,14 +124,14 @@ class EditsActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("التعديلات"),
+        title: const Text('التعديلات'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF4C5494)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: const Center(
-        child: Text("صفحة التعديلات - مؤقتة"),
+        child: Text('صفحة التعديلات - مؤقتة'),
       ),
     );
   }

@@ -35,14 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
               CustomButton(
                 text: 'إدخال نص حر',
                 onPressed: () {
-                  Navigator.pushNamed(context, '/textInput');
+                  Navigator.pushNamed(context, '/free_text_input');
                 },
               ),
               const SizedBox(height: 20),
               CustomButton(
                 text: 'اختيار من قائمة',
                 onPressed: () {
-                  Navigator.pushNamed(context, '/selectFromList');
+                  Navigator.pushNamed(context, '/guided_select');
                 },
               ),
             ],
@@ -59,7 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
               _currentIndex = index;
             });
-            // إضافة التنقل حسب الحاجة
+
+            // التنقل حسب أيقونة البار
+            if (index == 0) {
+              // الرئيسية، ممكن تظل في نفس الصفحة أو تنقل لصفحة أخرى
+            } else if (index == 1) {
+              Navigator.pushNamed(context, '/profile'); // رابط صفحة البروفايل
+            }
           },
           items: [
             BottomNavigationBarItem(

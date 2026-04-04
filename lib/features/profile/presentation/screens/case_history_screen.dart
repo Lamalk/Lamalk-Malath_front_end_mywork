@@ -104,8 +104,10 @@ class CaseCard extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -115,7 +117,7 @@ class CaseCard extends StatelessWidget {
               child: const Text(
                 'عرض التفاصيل',
                 style: TextStyle(
-                  color: Colors.white, // ✅ النص أبيض
+                  color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),

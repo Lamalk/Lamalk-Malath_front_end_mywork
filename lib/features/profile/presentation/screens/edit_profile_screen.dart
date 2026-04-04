@@ -1,133 +1,193 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final supabase = Supabase.instance.client;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  bool isLoading = true;
+  bool isSaving = false;
+
+  String? imageUrl;
+  File? selectedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    final data = await supabase
+        .from('users')
+        .select()
+        .eq('id', user.id)
+        .maybeSingle();
+
+    if (data != null) {
+      nameController.text = data['full_name'] ?? '';
+      emailController.text = data['email'] ?? '';
+      phoneController.text = data['phone_number'] ?? '';
+      imageUrl = data['profile_image'];
+    }
+
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
+      setState(() {
+        selectedImage = File(picked.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadImage(String userId) async {
+    if (selectedImage == null) return imageUrl;
+
+    final fileName = '$userId-${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    await supabase.storage
+        .from('profile-images')
+        .upload(fileName, selectedImage!);
+
+    final publicUrl = supabase.storage
+        .from('profile-images')
+        .getPublicUrl(fileName);
+
+    return publicUrl;
+  }
+
+  Future<void> _updateProfile() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    setState(() => isSaving = true);
+
+    try {
+      final newImageUrl = await _uploadImage(user.id);
+
+      await supabase
+          .from('users')
+          .update({
+            'full_name': nameController.text.trim(),
+            'phone_number': phoneController.text.trim(),
+            'profile_image': newImageUrl,
+          })
+          .eq('id', user.id);
+
+      if (emailController.text.trim() != user.email) {
+        await supabase.auth.updateUser(
+          UserAttributes(email: emailController.text.trim()),
+        );
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم تحديث البيانات بنجاح')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('حدث خطأ: $e')));
+      }
+    }
+
+    if (mounted) {
+      setState(() => isSaving = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF4C5494);
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'الملف الشخصي',
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 10),
-
-            // صورة البروفايل + أيقونة التعديل
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CircleAvatar(
-                  radius: 55,
-                  backgroundColor: Colors.lightBlue.shade100,
-                  backgroundImage: const AssetImage('assets/profile.png'), 
-                  // لو ما عندك صورة، احذفي backgroundImage
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: primaryColor,
+      appBar: AppBar(title: const Text('الملف الشخصي'), centerTitle: true),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 55,
+                        backgroundImage: selectedImage != null
+                            ? FileImage(selectedImage!)
+                            : (imageUrl != null
+                                ? NetworkImage(imageUrl!) as ImageProvider
+                                : const AssetImage(
+                                    'assets/images/profile.png',
+                                  )),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.camera_alt),
+                        onPressed: _pickImage,
+                      ),
+                    ],
                   ),
-                  child: IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white, size: 18),
-                    onPressed: () {},
+                  const SizedBox(height: 30),
+                  _textField(nameController, 'الاسم الكامل'),
+                  const SizedBox(height: 15),
+                  _textField(emailController, 'البريد الإلكتروني'),
+                  const SizedBox(height: 15),
+                  _textField(phoneController, 'رقم الهاتف'),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: isSaving ? null : _updateProfile,
+                      child: isSaving
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('حفظ التعديل'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 30),
-
-            // الاسم الكامل
-            _label('الاسم الكامل'),
-            _textField(hint: 'Aaron Ramsdale'),
-
-            const SizedBox(height: 16),
-
-            // البريد الإلكتروني
-            _label('البريد الإلكتروني'),
-            _textField(hint: 'aaronramsdale@gmail.com'),
-
-            const SizedBox(height: 16),
-
-            // رقم الهاتف
-            _label('رقم الهاتف'),
-            _textField(hint: '+966 512345678'),
-
-            const SizedBox(height: 40),
-
-            // زر حفظ التعديل
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text(
-                  'حفظ التعديل',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
-  // عنوان الحقل
-  static Widget _label(String text) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
-
-  // حقل الإدخال
-  static Widget _textField({required String hint}) {
+  Widget _textField(TextEditingController controller, String hint) {
     return TextField(
+      controller: controller,
       textAlign: TextAlign.right,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
         fillColor: const Color(0xFFF3F3F7),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

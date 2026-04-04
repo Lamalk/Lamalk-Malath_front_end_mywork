@@ -23,7 +23,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          selectedIndex == 0 ? "لوحة التحكم" : "الملف الشخصي",
+          selectedIndex == 0 ? 'لوحة التحكم' : 'الملف الشخصي',
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -62,14 +62,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
             : Colors.grey[300],
         child: Icon(
           icon,
-          color:
-              selectedIndex == index ? Colors.white : Colors.grey,
+          color: selectedIndex == index ? Colors.white : Colors.grey,
         ),
       ),
-      label: "",
+      label: '',
     );
   }
 }
+
 class DashboardBody extends StatelessWidget {
   const DashboardBody({super.key});
 
@@ -81,14 +81,19 @@ class DashboardBody extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildButton(
-                context, "إدارة المستخدمين", const ManageUsersScreen()),
+            buildButton(context, 'إدارة المستخدمين', const ManageUsersScreen()),
             const SizedBox(height: 20),
             buildButton(
-                context, "إدارة المواد القانونية", const ManageCasesScreen()),
+              context,
+              'إدارة المواد القانونية',
+              const ManageCasesScreen(),
+            ),
             const SizedBox(height: 20),
             buildButton(
-                context, "مراجعة أنشطة المستخدم", const UserActivityScreen()),
+              context,
+              'مراجعة أنشطة المستخدم',
+              const UserActivityScreen(),
+            ),
           ],
         ),
       ),
