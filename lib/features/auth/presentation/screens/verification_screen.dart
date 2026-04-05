@@ -55,7 +55,11 @@ class _VerificationCodeViewState extends State<VerificationCode> {
       return;
     }
     try {
-      await Supabase.instance.client.auth.signInWithOtp(email: widget.email);
+      await Supabase.instance.client.auth.resend(
+        type: OtpType.signup,
+        email: widget.email,
+      );
+
       _startTimer();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم إعادة إرسال الرمز بنجاح')),
@@ -74,19 +78,34 @@ class _VerificationCodeViewState extends State<VerificationCode> {
       );
       return;
     }
+
     try {
-      final response = await Supabase.instance.client.auth.verifyOTP(
+      final supabase = Supabase.instance.client;
+
+      /// ① التحقق من الرمز
+      await supabase.auth.verifyOTP(
         email: widget.email,
         token: otpCode.trim(),
         type: OtpType.signup,
       );
 
-      // بعد التحقق، الانتقال مباشرة لصفحة Login
-      Navigator.pushReplacementNamed(context, '/login');
+      /// ② جلب المستخدم الحالي
+      final user = supabase.auth.currentUser;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('تم التحقق بنجاح!')));
+      /// ③ إدخال البيانات في جدول users
+      await supabase.from('users').insert({
+        'id': user!.id,
+        'email': user.email,
+        'full_name': user.userMetadata?['full_name'],
+        'phone_number': user.userMetadata?['phone_number'],
+      });
+
+      /// ④ الانتقال للصفحة الرئيسية
+      Navigator.pushReplacementNamed(context, '/home');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم التحقق وحفظ البيانات بنجاح!')),
+      );
     } catch (e) {
       ScaffoldMessenger.of(
         context,
